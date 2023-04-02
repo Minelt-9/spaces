@@ -133,7 +133,6 @@ auto getAnRandomCard(Deck d)
 card dealerCard(const Deck Dealerdeck){
   auto randomCard{getAnRandomCard(Dealerdeck)};
   std::cout << "Dealer has got an card!\n";
-  printCard(randomCard);
   return randomCard;
 }
 
