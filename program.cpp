@@ -160,6 +160,9 @@ bool userHitStand(){
       return stand;
     case 'H':
       return stand;
+    default:
+      std::cout << "PLEASE ENTER AN VAILD INPUT\n";
+      break;
     }
   }
 
