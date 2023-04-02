@@ -133,6 +133,7 @@ auto getAnRandomCard(Deck d)
 card dealerCard(const Deck Dealerdeck){
   auto randomCard{getAnRandomCard(Dealerdeck)};
   std::cout << "Dealer has got an card!\n";
+  printCard(randomCard);
   return randomCard;
 }
 
@@ -166,40 +167,25 @@ bool userHitStand(){
   return stand;
 }
 
-// we might have to use static
-
-// check the value of all the cards (THEY RETURN CARDS SO ITS FINE)
-
 int checkCards(card& card){
 
   switch (card.rank)
   {
-  case Cardrank::card_1:
-    return 1;
-  case Cardrank::card_2:
-    return 2;
-  case Cardrank::card_3:
-    return 3;
-  case Cardrank::card_4:
-    return 4;
-  case Cardrank::card_5:
-    return 5;
-  case Cardrank::card_6:
-    return 6;
-  case Cardrank::card_7:
-    return 7;
-  case Cardrank::card_8:
-    return 8;
-  case Cardrank::card_9:
-    return 9;
-  case Cardrank::card_10:
-    return 10;
+  case Cardrank::card_1: return 1;
+  case Cardrank::card_2: return 2;
+  case Cardrank::card_3: return 3;
+  case Cardrank::card_4: return 4;
+  case Cardrank::card_5: return 5;
+  case Cardrank::card_6: return 6;
+  case Cardrank::card_7: return 7;
+  case Cardrank::card_8: return 8;
+  case Cardrank::card_9: return 9;
+  case Cardrank::card_10: return 10;
   case Cardrank::card_king:
   case Cardrank::card_queen:
   case Cardrank::card_jack:
     return 10;
-  case Cardrank::card_ace:
-    return 11;
+  case Cardrank::card_ace: return 11;
 
   default:
     std::cerr << "UNKNOW ERRROR HAS OCURRED!";
@@ -207,21 +193,27 @@ int checkCards(card& card){
   }
 }
 
-
-// if the player stands then give him and the dealer a card
 void giveCard(const Deck deck){
 
   int sumPlayer{0};
   int sumDealer{0};
+  int totalsumplayer{0};
+  int totalsumdealer{0};
 
   card newPlayer(playerCard(deck));
   card newDealer(dealerCard(deck));
-  
-  while (true)
-  {
+
+    card newestPlayer(playerCard(deck));
+    totalsumplayer = checkCards(newPlayer) + checkCards(newestPlayer);
+
+    int theTotalOfDealer{0};
+
+    int count{1};
+    while (true)
+    {
     if (!userHitStand())
     {
-      
+
       card player(playerCard(deck));
       card dealer(dealerCard(deck));
       if(checkCards(player) >= 21){
@@ -233,15 +225,16 @@ void giveCard(const Deck deck){
         return;
       }
 
-      if((checkCards(newPlayer) + checkCards(player)) >= 17){
+      if((checkCards(newPlayer) + checkCards(player)) >= 21){
         std::cout << "Busted sorry you loose!";
         return;
       }
 
-      sumPlayer += (checkCards(player) + checkCards(newPlayer));
+      sumPlayer += (checkCards(player) + totalsumplayer);
 
       sumDealer += (checkCards(dealer) + checkCards(newDealer));
-
+      
+      if(sumDealer > 17){
       if(sumPlayer == sumDealer){
         std::cout << "Its a Tie!";
         return;
@@ -254,32 +247,44 @@ void giveCard(const Deck deck){
         std::cout << "You loose!";
         return;
       }
+    }
 
-      if(userHitStand()) break;
+      theTotalOfDealer += checkCards(dealer);
+      count++;
+      
     }else{
       break;
     }
   }
+
+  int totalOfDealerCardsToPlayer{0};
+  for (int i{0}; i <= count; i++)
+  {
+    card Dealer(dealerCard(deck));
+    totalOfDealerCardsToPlayer += checkCards(newDealer) + theTotalOfDealer;
+  }
+
   // code if user stands goes here!
   if (checkCards(newPlayer) >= 21){
     std::cout << "Busted sorry you loose!";
     return;
   }
-  if (checkCards(newDealer) >= 21)
+  if (totalOfDealerCardsToPlayer >= 21)
   {
     std::cout << "Dealer busted you win!";
     return;
   }
-
-    if (checkCards(newPlayer) == checkCards(newDealer))
+    
+  
+    if (checkCards(newPlayer) == totalOfDealerCardsToPlayer)
     {
       std::cout << "Its a Tie!";
     }
-    else if (checkCards(newPlayer) > checkCards(newDealer))
+    else if (checkCards(newPlayer) > totalOfDealerCardsToPlayer)
     {
       std::cout << "Its a Win!";
     }
-    else if (checkCards(newPlayer) < checkCards(newDealer)){
+    else if (checkCards(newPlayer) < totalOfDealerCardsToPlayer){
       std::cout << "You loose!";
     }
 }
